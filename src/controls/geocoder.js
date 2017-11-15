@@ -6,9 +6,6 @@ import extend from 'xtend';
 import { EventEmitter } from 'events';
 import utils from '../utils'
 
-// Mapbox Geocoder version
-var API = 'https://api.mapbox.com/geocoding/v5/mapbox.places/';
-
 // Geocoder - this slightly mimicks the mapboxl-gl-geocoder but isn't an exact replica.
 // Once gl-js plugins can be added to custom divs, we should be able to require mapbox-gl-geocoder
 // instead of including it here
@@ -22,7 +19,9 @@ Geocoder.prototype = {
   options: {
     placeholder: 'Search',
     zoom: 16,
-    flyTo: true
+    flyTo: true,
+    // Mapbox Geocoder version
+    api: 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
   },
 
   onAdd: function(map) {
@@ -111,7 +110,7 @@ Geocoder.prototype = {
     options.push('access_token=' + accessToken);
 
     this.request.abort();
-    this.request.open('GET', API + encodeURIComponent(q.trim()) + '.json?' + options.join('&'), true);
+    this.request.open('GET', this.options.api + encodeURIComponent(q.trim()) + '.json?' + options.join('&'), true);
     this.request.onload = function() {
       this._loadingEl.classList.remove('active');
       if (this.request.status >= 200 && this.request.status < 400) {
